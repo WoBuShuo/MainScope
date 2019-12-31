@@ -1,4 +1,4 @@
-package com.example.natpro.presenter;
+package com.example.natpro.util;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

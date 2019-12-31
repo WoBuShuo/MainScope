@@ -4,7 +4,10 @@ import android.app.Activity
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.ViewTreeObserver
-import com.example.natpro.presenter.BasePresenter
+import com.example.natpro.bean.RankBean
+import com.example.natpro.mvp.MainPresenter
+import com.example.natpro.mvp.MainView
+import com.mengbao.baselibrary.mvp.MPBaseActivity
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.Observer
@@ -16,25 +19,31 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 
 
-class MainActivity : Activity() {
+class MainActivity : MPBaseActivity<MainView, MainPresenter>(), MainView  {
 
-
-    var presenter=BasePresenter()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        // Example of a call to a native method
+    override fun initView() {
         sample_text.text = stringFromJNI()
-        presenter.getRankData()
-        presenter.getHotkeyData()
+
+        //开始请求
+        presenter?.getRankData()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.destory()
+    override fun setLayoutResID(): Int {
+        return  R.layout.activity_main
     }
 
+    override fun createPresenter(): MainPresenter {
+        return MainPresenter()
+    }
+
+    override fun createView(): MainView {
+        return this
+    }
+
+    //请求成功回调
+    override fun getRankSucceed(rankBean: RankBean) {
+        sample_text.text = rankBean.pageCount.toString()
+    }
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -48,47 +57,6 @@ class MainActivity : Activity() {
             System.loadLibrary("native-lib")
         }
     }
-
-
-//    fun obser() {
-//
-//
-//
-//        MainScope().launch { }
-//        GlobalScope.launch {
-//
-//        }
-//
-//        val create = Observable.create<String> {
-//
-//            it.onNext("");
-//            it.onComplete()
-//
-//        }.subscribeOn(Schedulers.io())// 指定被观察者发生在 IO 线程
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .flatMap(object : Function<String, ObservableSource<String>> {
-//                override fun apply(t: String): ObservableSource<String> {
-//                    return Observable.just(t);
-//                }
-//            })
-//            .subscribe(object : Observer<String> {
-//                override fun onComplete() {
-//
-//                }
-//
-//                override fun onSubscribe(d: Disposable) {
-//                }
-//
-//                override fun onNext(t: String) {
-//                }
-//
-//                override fun onError(e: Throwable) {
-//
-//                }
-//            })
-//
-//
-//    }
 
 
 }

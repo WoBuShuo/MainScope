@@ -1,10 +1,10 @@
-package com.example.natpro.presenter
+package com.example.natpro.util
 
 import com.example.natpro.bean.BaseResult
 import okhttp3.ResponseBody
 import retrofit2.Call
 
-class RetrofitCoroutineDSL<T> {
+class ResultListener<T> {
 
     var api: (Call<ResponseBody>)? = null
     internal var onSuccess: ((BaseResult<T>) -> Unit)? = null
